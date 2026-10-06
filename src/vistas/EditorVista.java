@@ -15,9 +15,7 @@ import javax.swing.JToolBar;
 import javax.swing.WindowConstants;
 import javax.swing.border.LineBorder;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -81,7 +79,7 @@ public class EditorVista extends JFrame {
         tbEditor.add(btnGuardar);
 
         cmbTipo.setModel(
-                new DefaultComboBoxModel(Arrays.stream(TipoTrazo.values()).map(Enum::name).toArray(String[]::new)));
+                new DefaultComboBoxModel(TipoTrazo.values()));
         tbEditor.add(cmbTipo);
 
         for (int i = 0; i < 256; i++) {
@@ -143,17 +141,6 @@ public class EditorVista extends JFrame {
         });
         tbEditor.add(btnDibujar);
 
-        pnlGrafica.addMouseListener(new MouseAdapter() {
-            public void mouseClicked(MouseEvent evt) {
-                pnlGraficaMouseClicked(evt);
-            }
-        });
-        pnlGrafica.addMouseMotionListener(new MouseMotionAdapter() {
-            public void mouseMoved(MouseEvent evt) {
-                pnlGraficaMouseMoved(evt);
-            }
-        });
-
         pnlGrafica.setPreferredSize(new Dimension(300, 200));
 
         getContentPane().add(tbEditor, BorderLayout.NORTH);
@@ -171,6 +158,32 @@ public class EditorVista extends JFrame {
             }
         });
 
+    }
+
+    // getters
+
+    public TipoTrazo getTipoTrazoSeleccionado() {
+        return (TipoTrazo) cmbTipo.getSelectedItem();
+    }
+
+    public JPanel getPanelGrafica() {
+        return pnlGrafica;
+    }
+
+    public Graphics getGraficadorPanel() {
+        return pnlGrafica.getGraphics();
+    }
+
+    //setters
+
+    public void setClickPanelGrafica(MouseAdapter eventoRaton) {
+        pnlGrafica.addMouseListener(eventoRaton);
+        System.out.println("se asigna evento click");
+    }
+
+    public void setMovimientoRatonPanelGrafica(MouseMotionAdapter eventoRaton) {
+        pnlGrafica.addMouseMotionListener(eventoRaton);
+        System.out.println("se asigna evento movimiento raton");
     }
 
     private void setColor() {
@@ -199,12 +212,5 @@ public class EditorVista extends JFrame {
 
     }
 
-    private void pnlGraficaMouseClicked(MouseEvent evt) {
-
-    }
-
-    private void pnlGraficaMouseMoved(MouseEvent evt) {
-
-    }
 
 }
