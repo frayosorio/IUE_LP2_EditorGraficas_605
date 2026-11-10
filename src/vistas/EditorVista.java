@@ -1,29 +1,15 @@
 package vistas;
 
-import modelos.Estado;
 import modelos.TipoTrazo;
-import servicios.DibujoServicio;
 
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JToolBar;
-import javax.swing.WindowConstants;
+import javax.swing.*;
 import javax.swing.border.LineBorder;
 
 import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseMotionAdapter;
 import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.util.Arrays;
-import java.awt.event.MouseEvent;
 
 public class EditorVista extends JFrame {
 
@@ -33,12 +19,7 @@ public class EditorVista extends JFrame {
     private JToolBar tbEditor;
     private JPanel pnlGrafica;
 
-    Estado estado;
-    int x;
-    int y;
-    Color color;
-    String nombreArchivo = "";
-
+    private Color color;
 
     public EditorVista() {
 
@@ -62,20 +43,10 @@ public class EditorVista extends JFrame {
 
         btnCargar.setIcon(new ImageIcon(getClass().getResource("/iconos/AbrirArchivos.png")));
         btnCargar.setToolTipText("Agregar");
-        btnCargar.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent evt) {
-                cargarDibujo();
-            }
-        });
         tbEditor.add(btnCargar);
 
         btnGuardar.setIcon(new ImageIcon(getClass().getResource("/iconos/Guardar.png")));
         btnGuardar.setToolTipText("Guardar");
-        btnGuardar.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent evt) {
-                guardarDibujo();
-            }
-        });
         tbEditor.add(btnGuardar);
 
         cmbTipo.setModel(
@@ -93,21 +64,9 @@ public class EditorVista extends JFrame {
         lblColor.setOpaque(true);
         lblColor.setBorder(new LineBorder(Color.black, 2));
 
-        cmbColorR.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent evt) {
-                setColor();
-            }
-        });
-        cmbColorG.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent evt) {
-                setColor();
-            }
-        });
-        cmbColorB.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent evt) {
-                setColor();
-            }
-        });
+        cmbColorR.addActionListener(evento -> setColorTrazo());
+        cmbColorG.addActionListener(evento -> setColorTrazo());
+        cmbColorB.addActionListener(evento -> setColorTrazo());
 
         tbEditor.add(cmbColorR);
         tbEditor.add(cmbColorG);
@@ -116,29 +75,14 @@ public class EditorVista extends JFrame {
 
         btnSeleccionar.setIcon(new ImageIcon(getClass().getResource("/iconos/Seleccionar.png")));
         btnSeleccionar.setToolTipText("Agregar");
-        btnSeleccionar.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent evt) {
-                seleccionarTrazo();
-            }
-        });
         tbEditor.add(btnSeleccionar);
 
         btnEliminar.setIcon(new ImageIcon(getClass().getResource("/iconos/Eliminar.png")));
         btnEliminar.setToolTipText("Eliminar");
-        btnEliminar.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent evt) {
-                eliminarTrazo();
-            }
-        });
         tbEditor.add(btnEliminar);
 
         btnDibujar.setIcon(new ImageIcon(getClass().getResource("/iconos/Dibujar.png")));
         btnDibujar.setToolTipText("Dibujar");
-        btnDibujar.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent evt) {
-                dibujar();
-            }
-        });
         tbEditor.add(btnDibujar);
 
         pnlGrafica.setPreferredSize(new Dimension(300, 200));
@@ -146,17 +90,7 @@ public class EditorVista extends JFrame {
         getContentPane().add(tbEditor, BorderLayout.NORTH);
         getContentPane().add(pnlGrafica, BorderLayout.CENTER);
 
-        estado = Estado.NADA;
-        color = Color.white;
-
-        // ejecutar algo despues de que la ventana se despliegue
-        addWindowListener(new WindowAdapter() {
-
-            public void windowOpened(WindowEvent e) {
-                DibujoServicio.limpiarPanel(pnlGrafica);
-                setColor();
-            }
-        });
+        setColorTrazo();
 
     }
 
@@ -166,15 +100,27 @@ public class EditorVista extends JFrame {
         return (TipoTrazo) cmbTipo.getSelectedItem();
     }
 
-    public JPanel getPanelGrafica() {
-        return pnlGrafica;
-    }
-
     public Graphics getGraficadorPanel() {
         return pnlGrafica.getGraphics();
     }
 
+    public int getAnchoPanel() {
+        return pnlGrafica.getWidth();
+    }
+
+    public int getAltoPanel() {
+        return pnlGrafica.getHeight();
+    }
+
+
+    public Color getColorTrazo() {
+        return color;
+    }
     //setters
+
+    public void setIniciarLienzo(WindowAdapter eventoVentana) {
+        addWindowListener(eventoVentana);
+    }
 
     public void setClickPanelGrafica(MouseAdapter eventoRaton) {
         pnlGrafica.addMouseListener(eventoRaton);
@@ -186,31 +132,44 @@ public class EditorVista extends JFrame {
         System.out.println("se asigna evento movimiento raton");
     }
 
-    private void setColor() {
-        Color color = new Color(cmbColorR.getSelectedIndex(), cmbColorG.getSelectedIndex(),
+    public void setGuardarDibujo(ActionListener evento) {
+        btnGuardar.addActionListener(evento);
+    }
+
+    public void setCargarDibujo(ActionListener evento) {
+        btnCargar.addActionListener(evento);
+    }
+
+    public void setSeleccionarTrazo(ActionListener evento) {
+        btnSeleccionar.addActionListener(evento);
+    }
+
+    public void setEliminarTrazo(ActionListener evento) {
+        btnEliminar.addActionListener(evento);
+    }
+
+    public void setDibujar(ActionListener evento) {
+        btnDibujar.addActionListener(evento);
+    }
+
+    private void setColorTrazo() {
+        color = new Color(cmbColorR.getSelectedIndex(), cmbColorG.getSelectedIndex(),
                 cmbColorB.getSelectedIndex());
         lblColor.setBackground(color);
     }
 
-    private void cargarDibujo() {
+    // metodos publicos
 
+    public boolean confirmar(String mensaje) {
+        return JOptionPane.showConfirmDialog(null, mensaje, "",
+                JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION;
     }
 
-    private void guardarDibujo() {
-
+    public void mostrarMensaje(String mensaje) {
+        JOptionPane.showMessageDialog(null, mensaje);
     }
 
-    private void seleccionarTrazo() {
-
+    public void asignarCursor(Cursor cursor){
+        pnlGrafica.setCursor(cursor);
     }
-
-    private void eliminarTrazo() {
-
-    }
-
-    private void dibujar() {
-
-    }
-
-
 }

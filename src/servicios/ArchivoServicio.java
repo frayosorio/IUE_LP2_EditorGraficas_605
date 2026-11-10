@@ -12,10 +12,10 @@ public class ArchivoServicio {
 
     // Metodo para mostrar una ventana que permita elegir un archivo mediante
     // exploracion
-    public static String elegirArchivo() {
+    public static String elegirArchivo(boolean guardar) {
         JFileChooser fc = new JFileChooser();
-
-        if (fc.showOpenDialog(new JFrame()) == JFileChooser.APPROVE_OPTION) {
+        var seleccion = guardar ? fc.showSaveDialog(new JFrame()) : fc.showOpenDialog(new JFrame());
+        if (seleccion == JFileChooser.APPROVE_OPTION) {
             File f = fc.getSelectedFile();
             return f.getAbsolutePath();
         } else {
